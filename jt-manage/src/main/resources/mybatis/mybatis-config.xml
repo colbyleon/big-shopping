@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 作用：
+         1. 添加数据源
+         2. 可以配置缓存
+            一级缓存：默认开启 在sqlSession内实现数据共享
+            二级缓存：默认关闭 要求对象序列化，添加二级缓存标签cache, sqlSessionFactory内实现数据共享，read-only可以不序列化，只复制引用
+         3. Mybatis中的自动映射
+            -->
+	<settings>
+		<!-- 开启驼峰自动映射 user_age ==> userAge -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<!-- 二级缓存的总开关，被redis替代 -->
+		<setting name="cacheEnabled" value="false" />
+	</settings>
+
+
+	
+</configuration>
