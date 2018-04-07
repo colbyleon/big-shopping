@@ -24,13 +24,15 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:/mybatis/mybatis-config.xml"/>
         <property name="mapperLocations" value="classpath*:/mybatis/mappers/*Mapper.xml"/>
-        <property name="typeAliases" value="com.jt.manage.pojo.User"/>
+        <property name="typeAliasesPackage" value="com.jt.manage.pojo"/>
+
     </bean>
 
     <!-- 为Mapper接口生成代理对象
          原理：Spring为Mybatis的Mapper接口生成代理对象，
          由于Mapper的接口众多，Spring通过包扫描的方式，为包中的全部接口通过JDK动态代理创建代理对象
-         将象保存到Spring容器中，如果需要动态注入时赋值-->
+         将象保存到Spring容器中，如果需要动态注入时赋值
+         该bean实现了ApplicationContextAware，spring管理该bean时会将容器赋值给它-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.jt.manage.mapper"/>
     </bean>

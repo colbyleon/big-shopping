@@ -30,4 +30,15 @@
     <!-- 放行静态资源 -->
     <mvc:default-servlet-handler/>
 
+    <!-- 配置文件上传解析器
+         说明：文件上传解析器的id必须为：multipartResolver
+         规范：
+            1. 规定上传文件的最大值 1024*1024*10 = 10485760
+            2. 设置默认的字符集UTF-8-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10485760"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+
+    </bean>
+
 </beans>

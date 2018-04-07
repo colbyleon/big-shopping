@@ -11,6 +11,12 @@ import org.apache.ibatis.annotations.UpdateProvider;
 public interface SysMapper<T> {
 
     /**
+     * 实现通用的查询方法
+     */
+    @SelectProvider(type = SysMapperProvider.class,method = "dynamicSQL")
+    int testFindCount();
+
+    /**
      * 根据主键ID批量删除
      * 
      * @param key

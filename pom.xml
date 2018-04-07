@@ -6,7 +6,7 @@
 
     <groupId>com.jt</groupId>
     <artifactId>jt-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>jt-common</module>
         <module>jt-manage</module>

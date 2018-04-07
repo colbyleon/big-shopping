@@ -1,5 +1,6 @@
 package com.jt.manage.service;
 
+import com.jt.manage.pojo.Item;
 import com.jt.manage.pojo.User;
 
 import java.util.List;
@@ -7,4 +8,6 @@ import java.util.List;
 public interface UserService {
 
     List<User> findAll();
+
+
 }
