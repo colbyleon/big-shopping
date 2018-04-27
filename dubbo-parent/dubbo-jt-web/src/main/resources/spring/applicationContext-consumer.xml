@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="dubbo-web"/>
+
+    <dubbo:registry address="zookeeper://192.168.88.135:2181"/>
+
+    <!--
+        check:检查到没对应的注册时，不会直接报错，会定时重新检查
+        id: 应与生产者的id一致
+     -->
+    <dubbo:reference id="cartService" check="false" interface="com.jt.dubbo.service.DubboCartService" timeout="10000"/>
+    <dubbo:reference id="orderService" check="false" interface="com.jt.dubbo.service.DubboOrderService" timeout="10000"/>
+    <dubbo:reference id="searchService" interface="com.jt.dubbo.service.DubboSearchService" timeout="10000"/>
+</beans>

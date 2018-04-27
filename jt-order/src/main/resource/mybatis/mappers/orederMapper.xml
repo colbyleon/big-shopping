@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace
+     1. 是映射文件的唯一标识
+     2. 应该与接口的路径保持一致
+     3. 根据操作的数据表的不同，生成不同的namespace
+        一个表对对应的一个XXXMapper的接口-->
+<mapper namespace="com.jt.order.mapper.OrderMapper">
+
+    <!-- 大段的转义标签
+        <!CDATA[[ 任意xml文件 ]]>
+    -->
+
+    <update id="updateStatus">
+        <![CDATA[
+
+        update tb_order set status = 6
+        where status = 1 and created < #{agoDate}
+
+        ]]>
+    </update>
+
+</mapper>

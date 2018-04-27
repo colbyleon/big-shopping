@@ -1,0 +1,40 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+    <!-- spring管理Mybatis
+         1. spring整合sqlSessionFactoryBean
+         2. 添加数据源
+         3. 添加mybatis自己的配置文件
+            1. sqlMapConfig.xml
+            2. XXXMapper.xml
+         4. 为Mapper接口成生代理对象
+         JDK动态代理    被代理者必须有接口
+         CGLib代理对象  没有要求
+     -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:/mybatis/mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath*:/mybatis/mappers/*Mapper.xml"/>
+        <property name="typeAliasesPackage" value="com.jt.sso.pojo"/>
+
+    </bean>
+
+    <!-- 为Mapper接口生成代理对象
+         原理：Spring为Mybatis的Mapper接口生成代理对象，
+         由于Mapper的接口众多，Spring通过包扫描的方式，为包中的全部接口通过JDK动态代理创建代理对象
+         将象保存到Spring容器中，如果需要动态注入时赋值
+         该bean实现了ApplicationContextAware，spring管理该bean时会将容器赋值给它-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.jt.sso.mapper"/>
+    </bean>
+</beans>
+

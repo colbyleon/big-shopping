@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace
+     1. 是映射文件的唯一标识
+     2. 应该与接口的路径保持一致
+     3. 根据操作的数据表的不同，生成不同的namespace
+        一个表对对应的一个XXXMapper的接口-->
+<mapper namespace="com.jt.sso.mapper.UserMapper">
+
+    <!-- $ 没有预编译效果，是直接字符串拼接，适用于字段名称
+         # 有预编译效果，会自动加""号，适用于参数-->
+    <select id="findCheckUser" resultType="int">
+        select count(*) from tb_user
+        where ${column} = #{param}
+    </select>
+
+    <!-- 根据用户名和密码查询信息 -->
+    <select id="findUserByUP" resultType="user">
+        select * from tb_user
+        where username = #{username} and password = #{password}
+    </select>
+
+</mapper>

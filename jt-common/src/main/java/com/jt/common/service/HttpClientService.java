@@ -1,9 +1,13 @@
 package com.jt.common.service;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -25,186 +29,98 @@ public class HttpClientService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientService.class);
 
-    @Autowired(required=false)
+    @Autowired(required = false)
     private CloseableHttpClient httpClient;
 
-    @Autowired(required=false)
+    @Autowired(required = false)
     private RequestConfig requestConfig;
 
     /**
-     * 执行get请求
-     * 
-     * @param url
-     * @return
-     * @throws Exception
+     * 实现httpClient的get提交
+     * url:localhost:8091/addUser?id=18&name=tom
+     * 参数设定
+     * uri:表示请求路径
+     * Map<String,String> params 进行数据封装
+     * charset:字符编码
+     * 编码的思路：
+     * 1. 判断是否有参数
+     * 有：uri拼接参数
+     * 没有：表示该请求不需要参数
+     * 2. 判断编码是否为null，则设定默认的值为utf-8
+     * 3. 通过httpClient对象发送请求，之后获取返回值数据
      */
-    public String doGet(String url,Map<String, String> params,String encode) throws Exception {
-        LOGGER.info("执行GET请求，URL = {}", url);
-        if(null != params){
-            URIBuilder builder = new URIBuilder(url);
+    public String doGet(String uri, Map<String, String> params, String charset) throws URISyntaxException {
+        // 拼接参数的格式
+        if (params != null) {
+            URIBuilder builder = new URIBuilder(uri);
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 builder.setParameter(entry.getKey(), entry.getValue());
             }
-            url = builder.build().toString();
+            uri = builder.build().toString();
         }
-        // 创建http GET请求
-        HttpGet httpGet = new HttpGet(url);
+        // 判断编码是否为空
+        charset = charset == null ? "utf-8" : charset;
+        //定义get请求对象
+        HttpGet httpGet = new HttpGet(uri);
+        //定义请求连接的时长
         httpGet.setConfig(requestConfig);
-        CloseableHttpResponse response = null;
+        //发送请求
         try {
-            // 执行请求
-            response = httpClient.execute(httpGet);
-            // 判断返回状态是否为200
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            // 判断请求是否正确
             if (response.getStatusLine().getStatusCode() == 200) {
-                if(encode == null){
-                    encode = "UTF-8";
-                }
-                return EntityUtils.toString(response.getEntity(), encode);
+                String result = EntityUtils.toString(response.getEntity(), charset);
+                return result;
             }
-        } finally {
-            if (response != null) {
-                response.close();
-            }
-            // 此处不能关闭httpClient，如果关闭httpClient，连接池也会销毁
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
-    
-    public String doGet(String url, String encode) throws Exception{
-        return this.doGet(url, null, encode);
-    }
-    
-    public String doGet(String url) throws Exception{
-        return this.doGet(url, null, null);
+
+    public String doGet(String uri) throws URISyntaxException {
+        return doGet(uri, null, null);
     }
 
     /**
-     * 带参数的get请求
-     * 
-     * @param url
-     * @param params
-     * @return
-     * @throws Exception
+     * 实现httpClient的Post提交
+     * 1. 创建post请求的对象
+     * 2. 添加请求的参数（请求链接的时长）
+     * 3. 将需要传递的参数通过form表单的形式进行数据封装
+     * 4. 发出http请求获取响应信息
+     * 5. 判断响应是否成功，这后返回数据
      */
-    public String doGet(String url, Map<String, String> params) throws Exception {
-        return this.doGet(url, params, null);
-    }
-
-    /**
-     * 执行POST请求
-     * 
-     * @param url
-     * @param params
-     * @return
-     * @throws Exception
-     */
-    public String doPost(String url, Map<String, String> params,String encode) throws Exception {
-        // 创建http POST请求
-        HttpPost httpPost = new HttpPost(url);
+    public String doPost(String uri, Map<String, String> params, String charset) throws UnsupportedEncodingException {
+        /* 1. 创建post请求的对象*/
+        HttpPost httpPost = new HttpPost(uri);
+        /* 2. 添加请求的参数（请求链接的时长）*/
         httpPost.setConfig(requestConfig);
-
-        if (null != params) {
-            // 设置2个post参数，一个是scope、一个是q
-            List<NameValuePair> parameters = new ArrayList<NameValuePair>(0);
+        /* 3. 将需要传递的参数通过form表单的形式进行数据封装*/
+        charset = charset == null ? "utf-8" : charset;
+        if (params != null && params.size() > 0) {
+            List<NameValuePair> paramList = new ArrayList<>();
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                parameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+                paramList.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
-
-            // 构造一个form表单式的实体
-            UrlEncodedFormEntity formEntity = null;
-            if(encode!=null){
-                formEntity = new UrlEncodedFormEntity(parameters,encode);
-            }else{
-                formEntity = new UrlEncodedFormEntity(parameters);
-            }
-            // 将请求实体设置到httpPost对象中
-            httpPost.setEntity(formEntity);
+            httpPost.setEntity(new UrlEncodedFormEntity(paramList, charset));
         }
 
         CloseableHttpResponse response = null;
         try {
-            // 执行请求
             response = httpClient.execute(httpPost);
-            // 判断返回状态是否为200
             if (response.getStatusLine().getStatusCode() == 200) {
-                return EntityUtils.toString(response.getEntity(), "UTF-8");
+                String result = EntityUtils.toString(response.getEntity(), charset);
+                return result;
             }
-        } finally {
-            if (response != null) {
-                response.close();
-            }
+            response.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
-
-    /**
-     * 执行POST请求
-     * 
-     * @param url
-     * @param params
-     * @return
-     * @throws Exception
-     */
-    public String doPost(String url, Map<String, String> params) throws Exception {
-        // 创建http POST请求
-        HttpPost httpPost = new HttpPost(url);
-        httpPost.setConfig(requestConfig);
-
-        if (null != params) {
-            // 设置2个post参数，一个是scope、一个是q
-            List<NameValuePair> parameters = new ArrayList<NameValuePair>(0);
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                parameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-            }
-
-            // 构造一个form表单式的实体
-            UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters);
-            // 将请求实体设置到httpPost对象中
-            httpPost.setEntity(formEntity);
-        }
-
-        CloseableHttpResponse response = null;
-        try {
-            // 执行请求
-            response = httpClient.execute(httpPost);
-            // 判断返回状态是否为200
-            if (response.getStatusLine().getStatusCode() == 200) {
-                return EntityUtils.toString(response.getEntity(), "UTF-8");
-            }
-        } finally {
-            if (response != null) {
-                response.close();
-            }
-        }
-        return null;
-    }
-
-    public String doPostJson(String url, String json) throws Exception {
-        // 创建http POST请求
-        HttpPost httpPost = new HttpPost(url);
-        httpPost.setConfig(requestConfig);
-        
-        if(null != json){
-            //设置请求体为 字符串
-            StringEntity stringEntity = new StringEntity(json,"UTF-8");
-            httpPost.setEntity(stringEntity);
-        }
-
-        CloseableHttpResponse response = null;
-        try {
-            // 执行请求
-            response = httpClient.execute(httpPost);
-            // 判断返回状态是否为200
-            if (response.getStatusLine().getStatusCode() == 200) {
-                return EntityUtils.toString(response.getEntity(), "UTF-8");
-            }
-        } finally {
-            if (response != null) {
-                response.close();
-            }
-        }
-        return null;
+    public String doPost(String uri) throws UnsupportedEncodingException {
+        return doPost(uri, null, null);
     }
 
 }

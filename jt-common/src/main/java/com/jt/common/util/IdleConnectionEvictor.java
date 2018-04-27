@@ -24,6 +24,7 @@ public class IdleConnectionEvictor extends Thread {
         try {
             while (!shutdown) {
                 synchronized (this) {
+                    // 在这段时会释放掉锁，超时后会自动移动出锁池，wait(0)只有被唤醒在出锁池
                     wait(waitTime);
                     // 关闭失效的连接
                     connMgr.closeExpiredConnections();

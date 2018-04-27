@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace
+     1. 是映射文件的唯一标识
+     2. 应该与接口的路径保持一致
+     3. 根据操作的数据表的不同，生成不同的namespace
+        一个表对对应的一个XXXMapper的接口-->
+<mapper namespace="com.jt.order.mapper.OrderMapper">
+
+    <!-- 大段的转义标签
+        <!CDATA[[ 任意xml文件 ]]>
+    -->
+
+    <update id="updateStatus">
+        <![CDATA[
+
+
+        update tb_order set status = 6
+        where status = 1 and created < #{agoDate}
+
+        ]]>
+    </update>
+
+    <!-- 使用mybatis实现关联查询，并实现关联对象的封装 -->
+    <select id="selectByOrderId" resultMap="orderMap">
+        select o.*, i.* , s.*
+        from tb_order o
+        join tb_order_item i on o.order_id = i.order_id
+        join tb_order_shipping s on o.order_id = s.order_id
+        where o.order_id = #{orderId}
+    </select>
+
+    <resultMap id="orderMap" type="order" autoMapping="true">
+        <id property="orderId" column="order_id"/>
+        <association property="orderShipping" javaType="orderShipping" autoMapping="true"/>
+        <collection property="orderItems" ofType="orderItem" autoMapping="true"/>
+    </resultMap>
+
+    <!-- 已完成实现 -->
+    <!--<select id="selectByOrderId" resultMap="orderMP">
+        select * from tb_order where order_id = #{orderId};
+    </select>
+
+    <resultMap id="orderMP" type="order">
+        <id property="orderId" column="order_id"/>
+        <association property="orderShipping" column="order_id" javaType="orderShipping" select="findOrderShippingByOrderId"/>
+        <collection property="orderItems" ofType="orderItem" column="order_id" select="findOrderItemsById"/>
+    </resultMap>
+
+    <select id="findOrderShippingByOrderId" resultType="orderShipping">
+        select * from tb_order_shipping where order_id = #{order_id}
+    </select>
+
+    <select id="findOrderItemsById" resultType="orderItem">
+        select * from tb_order_item where order_id = #{order_id}
+    </select>-->
+
+
+</mapper>

@@ -9,7 +9,7 @@
     <artifactId>jt-manage</artifactId>
     <packaging>war</packaging>
     <name>jt-manage Maven Webapp</name>
-    <url>http://maven.apache.org</url>
+
     <dependencies>
         <dependency>
             <groupId>com.jt</groupId>

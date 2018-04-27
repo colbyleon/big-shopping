@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
         /**
          * SELECT * FROM tb_item LIMIT 20,20
          */
-        int start = (page-1)*rows; // 确定起始的行数
+        int start = (page - 1) * rows; // 确定起始的行数
         List<Item> itemList = itemMapper.findItemByPage(start, rows);
         return new EasyUIResult(total, itemList);
     }
@@ -52,6 +52,7 @@ public class ItemServiceImpl implements ItemService {
         itemDesc.setItemDesc(desc);
         itemDesc.setCreated(new Date());
         itemDesc.setUpdated(itemDesc.getCreated());
+
         itemDescMapper.insert(itemDesc);
     }
 
@@ -61,7 +62,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     // 查询记录总数
-    public int testFindCount(){
+    public int testFindCount() {
         return itemMapper.testFindCount();
     }
 
@@ -97,6 +98,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDesc findItemDescById(Long itemId) {
-        return itemDescMapper.selectByPrimaryKey(itemId);
+        ItemDesc itemDesc = new ItemDesc();
+        itemDesc.setItemId(itemId);
+        List<ItemDesc> itemDescs = itemDescMapper.select(itemDesc);
+        if (itemDescs.size()>0)
+            return itemDescs.get(0);
+        return null;
+    }
+
+    @Override
+    public Item findItemById(Long itemId) {
+        return itemMapper.selectByPrimaryKey(itemId);
     }
 }

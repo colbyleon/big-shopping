@@ -35,19 +35,6 @@ public class ItemController {
      */
 
 
-    /*@RequestMapping("/cat/queryItemCatName")
-    public void findItemCatName(Integer id, HttpServletResponse response){
-        // 根据商品id获取分类的名称
-        String name = itemService.findItemCatName(id);
-        response.setContentType("text/html;charset=utf-8");
-        try {
-            // 通过该方法可以返回任意格式的数据
-            response.getWriter().write(name);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
     /**
      * 说明：@ResponseBody注解作用
      * 1. 将java对象转换为JSON字符串
@@ -99,7 +86,6 @@ public class ItemController {
             itemService.updateItem(item);
             // 更新商品描述
             itemService.updateItemDesc(item.getId(),desc);
-
             return  SysResult.oK(); // 表示更新成功
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,7 +136,6 @@ public class ItemController {
             e.printStackTrace();
             return SysResult.build(201,"商品下架失败");
         }
-
     }
 
     //$.getJSON('/item/query/item/desc/'+data.id,function(_data){
@@ -160,12 +145,12 @@ public class ItemController {
         ItemDesc itemDesc = null;
         try {
             itemDesc = itemService.findItemDescById(itemId);
+            System.out.println("findItemDescById----->itemId=" + itemId);
+            System.out.println("findItemDescById----->itemDesc=" + itemDesc);
         } catch (Exception e) {
             e.printStackTrace();
             return SysResult.build(201, "查询失败");
         }
         return new SysResult(itemDesc);
     }
-
-
 }

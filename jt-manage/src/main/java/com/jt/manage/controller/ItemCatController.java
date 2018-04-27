@@ -1,5 +1,6 @@
 package com.jt.manage.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jt.manage.pojo.ItemCat;
 import com.jt.manage.service.ItemCatService;
 import com.jt.manage.vo.EasyUITree;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import redis.clients.jedis.Jedis;
 
 import java.util.List;
 
@@ -34,7 +36,14 @@ public class ItemCatController {
     public List<EasyUITree> findItemCatByParentId(
             @RequestParam(value = "id",defaultValue = "0" ) Long parentId){
         List<EasyUITree> easyUIList = itemCatService.findEasyUIList(parentId);
-
         return easyUIList;
     }
+
+    /**
+     * 1. 当查询数据时首先查询数据库
+     * 2. 当数据返回后，需要将数据存入缓存中（数据转化为JSON)
+     * 3. 当用户再次查询时，直接从缓存返回
+     */
+
+
 }

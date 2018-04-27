@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+    <!-- jedis池配置文件 -->
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!-- 设置最大和最小空闲数 -->
+        <property name="maxIdle" value="${redis.maxdle}"/>
+        <property name="minIdle" value="${redis.minldle}"/>
+        <!-- 设置最大连接数 -->
+        <property name="maxTotal" value="${redis.maxTotal}"/>
+        <!-- 最大建立连接等待时间 -->
+        <property name="maxWaitMillis" value="${redis.maxWait}"/>
+        <!-- 是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个 -->
+        <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
+    </bean>
+
+    <!-- Redis工厂配置，因为实现了factoryBean
+          spring会自动调用getObject方法返回实例
+          不用再设置factory-bean和factory-method
+          返回的类型是jedisCluster，而不是这个工厂的实例-->
+    <bean id="jedisCluster"  class="com.jt.common.util.RedisCluster" >
+        <property name="addressConfig">
+            <value>classpath:/properties/redis.properties</value>
+        </property>
+        <property name="addressKeyPrefix" value="redis.cluster" />   <!--  属性文件里  key的前缀 -->
+        <property name="timeout" value="${redis.timeout}" />
+        <property name="maxRedirections" value="6" />
+        <property name="genericObjectPoolConfig" ref="poolConfig" />
+    </bean>
+
+
+
+</beans>

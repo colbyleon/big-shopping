@@ -1,10 +1,12 @@
 package com.jt.manage.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jt.common.po.BasePojo;
 
 import javax.persistence.*;
 
 @Table(name = "tb_item_cat")
+@JsonIgnoreProperties(ignoreUnknown = true) //表示忽略未知的属性，这个注解在这里不起作用，因为原来的getText方法被删除了
 public class ItemCat extends BasePojo {
 
     /**

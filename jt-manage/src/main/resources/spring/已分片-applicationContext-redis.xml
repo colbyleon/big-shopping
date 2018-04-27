@@ -1,0 +1,52 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+    <!-- jedis池的配置文件 -->
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!--定义连接总数  -->
+        <property name="maxTotal" value="${redis.maxTotal}"/>
+        <!--定义最大闲置资源  -->
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <!--测试当前的链接是否可用，如果不可用则获取新的链接  -->
+        <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
+    </bean>
+
+    <!-- 定义redisInfo节点信息 -->
+    <bean id="jedisShardInfo1" class="redis.clients.jedis.JedisShardInfo">
+        <constructor-arg index="0" type="java.lang.String" value="${redis.host1}"/>
+        <constructor-arg index="1" type="int" value="${redis.port1}"/>
+    </bean>
+    <!-- 定义redisInfo节点信息 -->
+    <bean id="jedisShardInfo2" class="redis.clients.jedis.JedisShardInfo">
+        <constructor-arg index="0" type="java.lang.String" value="${redis.host2}"/>
+        <constructor-arg index="1" type="int" value="${redis.port2}"/>
+    </bean>
+    <!-- 定义redisInfo节点信息 -->
+    <bean id="jedisShardInfo3" class="redis.clients.jedis.JedisShardInfo">
+        <constructor-arg index="0" type="java.lang.String" value="${redis.host3}"/>
+        <constructor-arg index="1" type="int" value="${redis.port3}"/>
+    </bean>
+
+    <!-- 定义分片的连接池 -->
+    <bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">
+        <constructor-arg index="0" ref="poolConfig"/>
+        <constructor-arg index="1">
+            <list>
+                <ref bean="jedisShardInfo1"/>
+                <ref bean="jedisShardInfo2"/>
+                <ref bean="jedisShardInfo3"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>

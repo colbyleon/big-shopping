@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <properties resource="generator/generatorConfig.properties"/>
+
+    <context id="testTables" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <!-- 是否去除自动生成的注释 -->
+            <property name="suppressAllComments" value="${suppressAllComments}"/>
+        </commentGenerator>
+        <!-- mysql数据库连接的信息：驱动类、连接地址、用户名、密码 -->
+        <jdbcConnection driverClass="${driverClass}"
+                        connectionURL="${url}"
+                        userId="${username}"
+                        password="${password}"/>
+        <!-- targetProject:生成model类的位置 -->
+        <javaModelGenerator targetPackage="${modeltargetPackage}" targetProject="${targetProject}">
+            <!-- 是否让schema作为包的后缀 -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 从数据库返回的值被清理前后的空格 -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!-- mapper.xml映射文件生成的位置 -->
+        <sqlMapGenerator targetPackage="${sqltargetPackage}" targetProject="${targetProject}">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+        <!-- dao接口生成的位置 -->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="${clienttargetPackage}"
+                             targetProject="${targetProject}">
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+
+        <!-- 指定数据库表，要生成哪些表，就写哪些表，要各数据库中对应，不能写错！ -->
+        <table tableName="course"></table>
+        <table tableName="unit"/>
+
+    </context>
+</generatorConfiguration>

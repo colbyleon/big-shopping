@@ -4,8 +4,6 @@ import com.jt.common.vo.EasyUIResult;
 import com.jt.manage.pojo.Item;
 import com.jt.manage.pojo.ItemDesc;
 
-import java.util.List;
-
 public interface ItemService {
     EasyUIResult findItemAll(int page,int rows);
 
@@ -24,4 +22,6 @@ public interface ItemService {
     void updateItemDesc(Long itemId, String desc);
 
     ItemDesc findItemDescById(Long itemId);
+
+    Item findItemById(Long itemId);
 }

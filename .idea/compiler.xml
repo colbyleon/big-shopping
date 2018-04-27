@@ -6,10 +6,27 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="dubbo-jt-api" />
+        <module name="dubbo-jt-cart" />
+        <module name="dubbo-jt-order" />
+        <module name="dubbo-jt-solr" />
+        <module name="dubbo-jt-web" />
+        <module name="jt-cart" />
         <module name="jt-common" />
+        <module name="jt-jsoup" />
         <module name="jt-manage" />
+        <module name="jt-order" />
+        <module name="jt-sso" />
+        <module name="jt-web" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="double-jt-web" target="1.8" />
+      <module name="dubbo-api" target="1.8" />
+      <module name="dubbo-consumer" target="1.8" />
+      <module name="dubbo-parent" target="1.8" />
+      <module name="dubbo-provider" target="1.8" />
+      <module name="dubbo-provider2" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
